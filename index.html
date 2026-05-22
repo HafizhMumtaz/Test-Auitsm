@@ -1,15 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FoodTok</title>
 
   <style>
+
     * {
       margin: 0;
       padding: 0;
@@ -22,6 +20,7 @@
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       height: 100vh;
+      color: white;
     }
 
     .feed {
@@ -36,6 +35,7 @@
       width: 100%;
       scroll-snap-align: start;
       overflow: hidden;
+      background: black;
     }
 
     video {
@@ -44,85 +44,239 @@
       object-fit: cover;
     }
 
+    .dark-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          to top,
+          rgba(0,0,0,0.85),
+          rgba(0,0,0,0.15),
+          rgba(0,0,0,0.5)
+        );
+      z-index: 1;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      z-index: 3;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .top-bar span {
+      opacity: 0.7;
+      cursor: pointer;
+    }
+
+    .top-bar .active {
+      opacity: 1;
+      border-bottom: 2px solid white;
+      padding-bottom: 4px;
+    }
+
     .overlay {
       position: absolute;
       bottom: 20px;
-      left: 15px;
-      color: white;
-      z-index: 2;
+      left: 18px;
+      right: 90px;
+      z-index: 3;
+    }
+
+    .restaurant {
+      font-size: 15px;
+      color: #ddd;
+      margin-bottom: 6px;
     }
 
     .food-name {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
-    .info {
-      margin-bottom: 5px;
-      font-size: 18px;
+    .description {
+      font-size: 15px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      color: #f0f0f0;
     }
 
-    .buy-btn {
-      margin-top: 12px;
-      padding: 14px 24px;
-      border: none;
+    .stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.15);
+      padding: 8px 12px;
       border-radius: 12px;
-      background: #ff3b30;
+      backdrop-filter: blur(8px);
+      font-size: 14px;
+    }
+
+    .discount {
+      display: inline-block;
+      background: #ff2d55;
       color: white;
-      font-size: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .buy-btn,
+    .cart-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
       transition: 0.2s;
     }
 
-    .buy-btn:hover {
+    .buy-btn {
+      background: #ff3b30;
+      color: white;
+    }
+
+    .cart-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .buy-btn:hover,
+    .cart-btn:hover {
       transform: scale(1.05);
     }
 
     .side-buttons {
       position: absolute;
-      right: 15px;
-      bottom: 120px;
+      right: 14px;
+      bottom: 110px;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 18px;
-      color: white;
-      font-size: 26px;
-      z-index: 2;
+      z-index: 3;
     }
 
     .icon {
       text-align: center;
       cursor: pointer;
+      font-size: 28px;
     }
 
     .icon span {
       display: block;
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 4px;
     }
 
-    @media (max-width: 768px) {
-      .food-name {
-        font-size: 22px;
-      }
-
-      .info {
-        font-size: 16px;
-      }
-
-      .buy-btn {
-        width: 90%;
-      }
+    .profile-pic {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
     }
+
+    .cart-popup {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 14px;
+      z-index: 999;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 70px;
+      left: 18px;
+      z-index: 3;
+      background: red;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .trending {
+      position: absolute;
+      top: 120px;
+      left: 18px;
+      z-index: 3;
+      background: rgba(255,255,255,0.18);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+
+      .food-name {
+        font-size: 24px;
+      }
+
+      .description {
+        font-size: 14px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      .buy-btn,
+      .cart-btn {
+        width: 100%;
+      }
+
+    }
+
   </style>
 </head>
-
 <body>
 
   <div class="feed">
 
-    <!-- FOOD CARD 1 -->
+    <!-- CARD 1 -->
     <div class="card">
 
       <video
@@ -130,44 +284,104 @@
         autoplay
         muted
         loop
+        playsinline
       ></video>
+
+      <div class="dark-overlay"></div>
+
+      <div class="top-bar">
+        <span class="active">For You</span>
+        <span>Following</span>
+        <span>Nearby</span>
+      </div>
+
+      <div class="live-badge">
+        🔴 LIVE DEALS
+      </div>
+
+      <div class="trending">
+        🔥 Trending in Jakarta
+      </div>
 
       <div class="overlay">
 
+        <div class="restaurant">
+          Burger District
+        </div>
+
         <div class="food-name">
-          Smash Burger
+          Double Smash Burger
         </div>
 
-        <div class="info">
-          ⭐ 4.8 Rating
+        <div class="description">
+          Juicy smashed beef patties, melted cheese,
+          crispy onions, and signature sauce.
         </div>
 
-        <div class="info">
-          💲 8.99
+        <div class="discount">
+          40% OFF • Limited Time
         </div>
 
-        <div class="info">
-          ⏱ ETA: 22 mins
+        <div class="stats">
+
+          <div class="stat-box">
+            ⭐ 4.9
+          </div>
+
+          <div class="stat-box">
+            💲 8.99
+          </div>
+
+          <div class="stat-box">
+            ⏱ 22 mins
+          </div>
+
+          <div class="stat-box">
+            🚚 Free Delivery
+          </div>
+
         </div>
 
-        <button
-          class="buy-btn"
-          onclick="buyFood('Smash Burger', 8.99)"
-        >
-          Buy Now
-        </button>
+        <div class="buttons">
+
+          <button
+            class="buy-btn"
+            onclick="buyNow('Double Smash Burger')"
+          >
+            Buy Now
+          </button>
+
+          <button
+            class="cart-btn"
+            onclick="addToCart('Double Smash Burger')"
+          >
+            Add to Cart
+          </button>
+
+        </div>
+
       </div>
 
       <div class="side-buttons">
 
+        <img
+          class="profile-pic"
+          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300"
+        />
+
         <div class="icon">
           ❤️
-          <span>12k</span>
+          <span>18.2k</span>
         </div>
 
         <div class="icon">
           💬
-          <span>431</span>
+          <span>1.2k</span>
+        </div>
+
+        <div class="icon">
+          🔖
+          <span>Save</span>
         </div>
 
         <div class="icon">
@@ -179,7 +393,8 @@
 
     </div>
 
-    <!-- FOOD CARD 2 -->
+
+    <!-- CARD 2 -->
     <div class="card">
 
       <video
@@ -187,45 +402,90 @@
         autoplay
         muted
         loop
+        playsinline
       ></video>
+
+      <div class="dark-overlay"></div>
 
       <div class="overlay">
 
+        <div class="restaurant">
+          Tokyo Ramen House
+        </div>
+
         <div class="food-name">
-          Japanese Ramen
+          Spicy Tonkotsu Ramen
         </div>
 
-        <div class="info">
-          ⭐ 4.9 Rating
+        <div class="description">
+          Creamy pork broth, handmade noodles,
+          soft-boiled egg, and spicy chili oil.
         </div>
 
-        <div class="info">
-          💲 12.50
+        <div class="discount">
+          Buy 1 Get 1 Free
         </div>
 
-        <div class="info">
-          ⏱ ETA: 18 mins
+        <div class="stats">
+
+          <div class="stat-box">
+            ⭐ 4.8
+          </div>
+
+          <div class="stat-box">
+            💲 12.50
+          </div>
+
+          <div class="stat-box">
+            ⏱ 18 mins
+          </div>
+
+          <div class="stat-box">
+            🛵 Fast Delivery
+          </div>
+
         </div>
 
-        <button
-          class="buy-btn"
-          onclick="buyFood('Japanese Ramen', 12.50)"
-        >
-          Buy Now
-        </button>
+        <div class="buttons">
+
+          <button
+            class="buy-btn"
+            onclick="buyNow('Spicy Tonkotsu Ramen')"
+          >
+            Buy Now
+          </button>
+
+          <button
+            class="cart-btn"
+            onclick="addToCart('Spicy Tonkotsu Ramen')"
+          >
+            Add to Cart
+          </button>
+
+        </div>
 
       </div>
 
       <div class="side-buttons">
 
+        <img
+          class="profile-pic"
+          src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=300"
+        />
+
         <div class="icon">
           ❤️
-          <span>8k</span>
+          <span>9.8k</span>
         </div>
 
         <div class="icon">
           💬
-          <span>250</span>
+          <span>883</span>
+        </div>
+
+        <div class="icon">
+          🔖
+          <span>Save</span>
         </div>
 
         <div class="icon">
@@ -239,23 +499,46 @@
 
   </div>
 
+
+  <div class="cart-popup" id="cartPopup">
+    Added to cart
+  </div>
+
+
   <script>
 
-    function buyFood(name, price) {
+    function buyNow(foodName) {
 
       alert(
-        `Buying ${name} for $${price}`
+        `Proceeding to checkout for ${foodName}`
       );
 
-      // future:
-      // redirect to checkout page
-      // connect payment gateway
-      // create order
     }
 
-    // autoplay current video only
+
+    function addToCart(foodName) {
+
+      const popup =
+        document.getElementById("cartPopup");
+
+      popup.innerText =
+        `${foodName} added to cart`;
+
+      popup.style.display = "block";
+
+      setTimeout(() => {
+
+        popup.style.display = "none";
+
+      }, 2200);
+
+    }
+
+
+    // autoplay visible videos only
     const videos =
       document.querySelectorAll("video");
+
 
     const observer =
       new IntersectionObserver(
@@ -264,18 +547,23 @@
           entries.forEach(entry => {
 
             if (entry.isIntersecting) {
+
               entry.target.play();
+
             } else {
+
               entry.target.pause();
+
             }
 
           });
 
         },
         {
-          threshold: 0.6
+          threshold: 0.7
         }
       );
+
 
     videos.forEach(video => {
       observer.observe(video);
